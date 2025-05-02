@@ -1,0 +1,75 @@
+.navContainer {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	height: 100px;
+	width: 100%;
+	background-color: #91a2f6;
+}
+
+.leftWrapper {
+	display: flex;
+	flex-direction: row;
+	height: 90px;
+	width: 570px;
+}
+
+.logo {
+	width: 80px;
+	height: 80px;
+	margin: 10px 65px 20px 36px;
+}
+
+.about {
+	margin: 10px 0 20px 0;
+	font-size: 26px;
+	color: #fff;
+	letter-spacing: 5px;
+}
+
+.rightWrapper {
+	display: flex;
+	flex-direction: column;
+	height: 90px;
+	width: 110px;
+}
+
+.buttons {
+	margin: 5px 0 0 0;
+}
+
+.icons {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+	align-items: center;
+	margin: 15px 10px 0 0;
+}
+
+.icon {
+	width: 25px;
+	height: 25px;
+	background-color: red;
+	margin: 0 0 0 22px;
+}
+
+.userName {
+	color: #fff;
+	margin: 10px 0 0 0;
+	text-align: center;
+	font-size: 20px;
+	border-bottom: 1px solid #fff;
+}
+
+.logout {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin: 0 -8px;
+}
+
+.iconsContainer {
+	display: flex;
+	justify-content: flex-end;
+	margin: 0 15px 0 0;
+}

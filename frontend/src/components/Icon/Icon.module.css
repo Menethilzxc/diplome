@@ -1,0 +1,14 @@
+.icon {
+	display: inline-block;
+	color: #fff;
+	transition: color 0.3s ease;
+}
+
+.icon:hover {
+	cursor: pointer;
+}
+
+.disabled {
+	color: #ccc;
+	pointer-events: none;
+}

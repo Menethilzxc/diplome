@@ -1,0 +1,49 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+}
+
+.cards {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+.paragraph {
+	height: 34px;
+	overflow: hidden;
+	word-break: break-all;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.card {
+	cursor: pointer;
+	margin: 30px;
+	border: 1px solid #000;
+	border-radius: 5px;
+	box-shadow: 2px 2px 2px #91a2f6;
+	width: 275px;
+	height: 310px;
+	overflow: hidden;
+}
+
+.hotelsImg {
+	width: 273px;
+	height: 190px;
+	object-fit: cover;
+}
+
+.card h3 {
+	font-weight: 600;
+	margin: 0 0 5px 0;
+	padding: 5px;
+}
+
+.card p {
+	margin: 10px 0 0 0;
+	padding: 5px;
+	font-size: 18px;
+}

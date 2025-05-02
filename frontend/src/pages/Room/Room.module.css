@@ -1,0 +1,44 @@
+.container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.about {
+	margin: 0 50px 0 0;
+	width: 360px;
+}
+
+.roomInfo {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	width: 600px;
+	height: 100%;
+	max-height: 185px;
+	margin-top: 94px;
+}
+
+.title {
+	margin-bottom: 20px;
+}
+
+.button {
+	color: #fff;
+	padding: 5px;
+	background-color: #798cec;
+	width: 130px;
+}
+
+.price {
+	margin: 50px 0 0 0;
+}
+
+p {
+	font-size: 24px;
+}
+
+.success {
+	color: green;
+	margin: 30px 0 0 0;
+}

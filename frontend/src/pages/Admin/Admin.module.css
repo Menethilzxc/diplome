@@ -1,0 +1,10 @@
+.container {
+	height: 100%;
+}
+
+.title {
+	font-size: 28px;
+	font-weight: 400;
+	text-align: left;
+	margin-bottom: 20px;
+}
