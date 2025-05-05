@@ -1,10 +1,53 @@
 .container {
 	height: 100%;
+	width: 100%;
+}
+
+.roomBadge {
+	width: 30px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 4px;
+	border-radius: 4px;
+	color: white;
+	font-weight: bold;
+}
+
+.available {
+	background-color: green;
+}
+
+.unavailable {
+	background-color: red;
+}
+
+.roomsGrid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: 8px;
+}
+
+.hotelsList {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 10px;
+	justify-items: center;
+}
+
+.hotelCard {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 280px;
+	border: 1px dashed #91a2f6;
+	border-radius: 10px;
+	margin-bottom: 10px;
+	padding: 10px;
 }
 
 .title {
-	font-size: 28px;
-	font-weight: 400;
-	text-align: left;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 }

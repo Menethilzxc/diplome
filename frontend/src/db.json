@@ -104,7 +104,7 @@
       "title": "Люкс",
       "number": 3,
       "price": 10000,
-      "available": true
+      "available": false
     },
     {
       "id": "4",
@@ -160,7 +160,7 @@
       "title": "Стандарт Невский",
       "number": 4,
       "price": 6000,
-      "available": true
+      "available": false
     },
     {
       "id": "11",
@@ -515,5 +515,26 @@
       "available": true
     }
   ],
-  "bookings": []
+  "bookings": [
+    {
+      "id": "963e",
+      "roomId": "3",
+      "hotelId": "1",
+      "hotel": "Отель Москва",
+      "number": 3,
+      "roomTitle": "Люкс",
+      "price": 10000,
+      "bookingDate": "02.05.2025, 20:52:28"
+    },
+    {
+      "id": "f35b",
+      "roomId": "10",
+      "hotelId": "2",
+      "hotel": "Отель Петербург",
+      "number": 4,
+      "roomTitle": "Стандарт Невский",
+      "price": 6000,
+      "bookingDate": "02.05.2025, 21:17:35"
+    }
+  ]
 }

@@ -5,47 +5,58 @@ import styles from './Admin.module.css';
 
 export const Admin = () => {
 	const [rooms, setRooms] = useState([]);
+	const [hotels, setHotels] = useState(null);
+
+	console.log(hotels);
 
 	useEffect(() => {
 		const fetchRooms = async () => {
 			try {
-				const res = await fetch('http://localhost:3001/rooms');
-				const data = await res.json();
-				setRooms(data);
+				const resRooms = await fetch('http://localhost:3001/rooms');
+				const dataRooms = await resRooms.json();
+				setRooms(dataRooms);
 			} catch (error) {
 				console.error('Ошибка при загрузке номеров: ', error);
 			}
 		};
 
+		const fetchHotels = async () => {
+			try {
+				const resHotels = await fetch('http://localhost:3001/hotels');
+				const dataHotels = await resHotels.json();
+				setHotels(dataHotels);
+			} catch (error) {
+				console.error('Ошибка при загрузке отелей: ', error);
+			}
+		};
+
 		fetchRooms();
+		fetchHotels();
 	}, []);
+
+	if (!hotels) {
+		return <div className={styles.loading}>Загрузка...</div>;
+	}
 
 	return (
 		<div className={styles.container}>
 			<Title>Панель администратора</Title>
-			<h4 className={styles.title}>Статусы номеров:</h4>
-			<div className={styles.roomsList}>
-				{rooms.map((room) => (
-					<div key={room.id} className={styles.roomCard}>
-						<p>
-							<strong>Отель: </strong> {room.hotelId}
-						</p>
-						<p>
-							<strong>Номер: </strong> {room.number} - {room.title}
-						</p>
-						<p>
-							<strong>Цена: </strong> {room.price}
-						</p>
-						<p>
-							<strong>Статус: </strong>{' '}
-							<span
-								className={
-									room.available ? styles.available : styles.booked
-								}
-							>
-								{room.available ? 'Доступен' : 'Забронирован'}
-							</span>
-						</p>
+			<div className={styles.hotelsList}>
+				{hotels.map((hotel) => (
+					<div key={hotel.id} className={styles.hotelCard}>
+						<h4 className={styles.title}>{hotel.title}</h4>
+						<div className={styles.roomsGrid}>
+							{rooms
+								.filter((room) => room.hotelId === hotel.id)
+								.map((room) => (
+									<div
+										key={room.id}
+										className={`${styles.roomBadge} ${room.available ? styles.available : styles.unavailable}`}
+									>
+										{room.number}
+									</div>
+								))}
+						</div>
 					</div>
 				))}
 			</div>

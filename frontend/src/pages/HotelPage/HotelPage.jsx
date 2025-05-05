@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Title, Button } from '../../components';
 import { selectUser } from '../../selectors';
@@ -12,8 +12,6 @@ export const HotelPage = () => {
 	const [rooms, setRooms] = useState([]);
 
 	const user = useSelector(selectUser);
-
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchHotelAndRooms = async () => {
