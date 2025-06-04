@@ -17,10 +17,12 @@
 
 .available {
 	background-color: green;
+	cursor: pointer;
 }
 
 .unavailable {
 	background-color: red;
+	cursor: pointer;
 }
 
 .roomsGrid {
@@ -50,4 +52,9 @@
 
 .title {
 	margin-bottom: 10px;
+}
+
+.loading {
+	opacity: 0.5;
+	pointer-events: none;
 }

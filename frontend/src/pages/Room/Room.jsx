@@ -1,32 +1,35 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Title } from '../../components';
-import { selectUser } from '../../selectors/';
+import { selectRooms, selectUser } from '../../selectors/';
+import { setRooms } from '../../actions';
+import { apiRequest } from '../../utils';
 
 import styles from './Room.module.css';
 
 export const Room = () => {
 	const { id } = useParams();
-	const [room, setRoom] = useState(null);
 	const [bookingFlag, setBookingFlag] = useState(false);
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	const room = useSelector(selectRooms);
 
 	const user = useSelector(selectUser);
 
 	useEffect(() => {
 		const fetchRoom = async () => {
 			try {
-				const res = await fetch(`http://localhost:3001/rooms/${id}`);
-				const data = await res.json();
-				setRoom(data);
+				const data = await apiRequest(`/rooms/${id}`);
+				dispatch(setRooms(data));
 			} catch (error) {
 				console.error('Ошибка при загрузке номера: ', error);
 			}
 		};
 
 		fetchRoom();
-	}, [id]);
+	}, [id, dispatch]);
 
 	const handleBooking = async () => {
 		if (!user) {
@@ -35,18 +38,13 @@ export const Room = () => {
 		}
 
 		try {
-			await fetch('http://localhost:3001/bookings', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					roomId: room.id,
-					roomTitle: room.title,
-					roomPrice: room.price,
-					userLogin: user,
-				}),
+			await apiRequest('/bookings', 'POST', {
+				roomId: room.id,
+				roomTitle: room.title,
+				roomPrice: room.price,
+				userLogin: user,
 			});
+
 			setBookingFlag(true);
 
 			setTimeout(() => {

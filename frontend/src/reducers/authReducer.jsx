@@ -1,9 +1,18 @@
 import { ACTION_TYPE } from '../actions';
 
 export const initialState = {
-	isAuth: false,
-	user: null,
-	role: null,
+	isAuth: localStorage.getItem('isAuth') === 'true',
+	user: (() => {
+		try {
+			const parsed = JSON.parse(localStorage.getItem('user'));
+			return parsed || null;
+		} catch (error) {
+			console.error('Ошибка при парсинге: ', error);
+			return null;
+		}
+	})(),
+	role: localStorage.getItem('role') || null,
+	token: localStorage.getItem('token') || null,
 };
 
 export const authReducer = (state = initialState, action) => {
@@ -16,6 +25,7 @@ export const authReducer = (state = initialState, action) => {
 				isAuth: true,
 				user: payload.user,
 				role: payload.role,
+				token: payload.token,
 			};
 		case ACTION_TYPE.LOGOUT:
 			return {
@@ -23,6 +33,7 @@ export const authReducer = (state = initialState, action) => {
 				isAuth: false,
 				user: null,
 				role: null,
+				token: null,
 			};
 		default:
 			return state;

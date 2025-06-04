@@ -3,10 +3,11 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Button, Title, Input } from '../../components';
-import { ACTION_TYPE } from '../../actions';
+import { ACTION_TYPE, login } from '../../actions';
 import { selectRole } from '../../selectors';
 
 import styles from './Registration.module.css';
+import { apiRequest } from '../../utils';
 
 export const Registration = () => {
 	const {
@@ -14,7 +15,7 @@ export const Registration = () => {
 		handleSubmit,
 		watch,
 		setError,
-		formState: { errors },
+		formState: { errors, isValid },
 	} = useForm();
 
 	const [isRegistered, setIsRegistered] = useState(false);
@@ -32,49 +33,29 @@ export const Registration = () => {
 
 	const onSubmit = async (data) => {
 		try {
-			const checkRes = await fetch(
-				`http://localhost:3001/users?login=${data.login}`,
-			);
-			const existingUsers = await checkRes.json();
-
-			if (existingUsers.length > 0) {
-				setError('login', { message: 'Такой логин уже существует' });
-
-				return;
-			}
-
 			const newUser = {
 				login: data.login,
 				password: data.password,
-				role: 1,
 			};
 
-			const res = await fetch('http://localhost:3001/users', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(newUser),
-			});
+			const res = await apiRequest('/auth/register', 'POST', newUser);
 
-			const createdUser = await res.json();
-
-			dispatch({
-				type: ACTION_TYPE.LOGIN,
-				payload: {
-					user: createdUser.login,
-					role: createdUser.role,
-				},
-			});
+			dispatch(login({ login: data.login, role: 'user' }, 'user', res.token));
 
 			localStorage.setItem(
 				'user',
-				JSON.stringify({ user: createdUser.login, role: createdUser.role }),
+				JSON.stringify({ login: data.login, role: 'user' }),
 			);
+
+			localStorage.setItem('token', res.token);
 
 			setIsRegistered(true);
 		} catch (error) {
-			console.error('Ошибка при регистрации: ', error);
+			if (error.message === 'Пользователь уже существует') {
+				setError('login', { message: 'Такой логин уже существует' });
+			} else {
+				console.error('Ошибка при регистрации: ', error);
+			}
 		}
 	};
 
@@ -142,13 +123,7 @@ export const Registration = () => {
 						<Button
 							className={styles.button}
 							type="submit"
-							disabled={
-								!!(
-									errors.login ||
-									errors.password ||
-									errors.confirmPassword
-								)
-							}
+							disabled={!isValid}
 						>
 							Зарегистрироваться
 						</Button>

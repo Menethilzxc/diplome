@@ -1,52 +1,32 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUser } from '../../selectors';
+import { selectBookings, selectUser } from '../../selectors';
 import { Title, Button } from '../../components';
-import { ACTION_TYPE } from '../../actions';
-import { setRoomAvailable } from '../../actions';
+import { setBookings, setRoomAvailable } from '../../actions';
+import { apiRequest, formatDate } from '../../utils';
 
 import styles from './Bookings.module.css';
+import { fetchUserBookings } from '../../hooks';
 
 export const Bookings = () => {
-	const [booking, setBooking] = useState([]);
+	const bookings = useSelector(selectBookings);
 	const user = useSelector(selectUser);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		const fetchBookings = async () => {
-			try {
-				const res = await fetch(
-					`http://localhost:3001/bookings?userLogin=${user}`,
-				);
-				const data = await res.json();
-				setBooking(data);
-			} catch (error) {
-				console.error('Ошибка при загрузке бронирований: ', error);
-			}
-		};
-
-		if (user) {
-			fetchBookings();
+		if (user?._id) {
+			dispatch(fetchUserBookings(user._id));
 		}
-	}, [user]);
+	}, [user._id, dispatch, bookings.length]);
 
 	const handleDelete = async (bookingId, roomId) => {
 		try {
-			await fetch(`http://localhost:3001/bookings/${bookingId}`, {
-				method: 'DELETE',
-			});
+			await apiRequest(`/bookings/${bookingId}`, 'DELETE');
 
-			await fetch(`http://localhost:3001/rooms/${roomId}`, {
-				method: 'PATCH',
-				headers: {
-					'Content-Type': 'aplication/json',
-				},
-				body: JSON.stringify({ available: true }),
-			});
+			dispatch(fetchUserBookings(user._id));
 
-			setBooking((prev) => prev.filter((booking) => booking.id !== bookingId));
-			dispatch(setRoomAvailable(roomId));
+			dispatch(setRoomAvailable({ id: roomId, available: true }));
 		} catch (error) {
 			console.error('Ошибка при удалении брони: ', error);
 		}
@@ -54,30 +34,35 @@ export const Bookings = () => {
 
 	return (
 		<div className={styles.container}>
-			<Title>Ваши бронирования, {user}</Title>
-			{booking.length === 0 ? (
+			<Title>Ваши бронирования, {user?.login ? user.login : '...'}</Title>
+			{bookings.length === 0 ? (
 				<p className={styles.noBooking}>У вас нет активных бронирований</p>
 			) : (
 				<div className={styles.bookingsList}>
-					{booking.map((item) => (
-						<li key={item.id} className={styles.list}>
-							<Link to={`/hotels/${item.hotelId}`} className={styles.link}>
+					{bookings.map((item) => (
+						<li key={item._id} className={styles.list}>
+							<Link
+								to={`/hotels/${item.hotelId._id}`}
+								className={styles.link}
+							>
 								<p className={styles.bookingInfo}>
-									Отель: "{item.hotel}"
+									Отель: "{item.hotelId.title}"
 								</p>
 								<p className={styles.bookingInfo}>
-									Номер: {item.number} - "{item.roomTitle}"
+									Номер: {item.roomId.number} - "{item.roomId.title}"
 								</p>
-								<p className={styles.bookingInfo}>Цена: {item.price} ₽</p>
 								<p className={styles.bookingInfo}>
-									Дата бронирования: {item.bookingDate}
+									Цена: {item.roomId.price} ₽
+								</p>
+								<p className={styles.bookingInfo}>
+									Дата бронирования: {formatDate(item.bookingDate)}
 								</p>
 							</Link>
 							<Button
 								className={styles.deleteBtn}
-								onClick={() => handleDelete(item.id, item.roomId)}
+								onClick={() => handleDelete(item._id, item.roomId._id)}
 							>
-								Удалить
+								Отменить
 							</Button>
 						</li>
 					))}

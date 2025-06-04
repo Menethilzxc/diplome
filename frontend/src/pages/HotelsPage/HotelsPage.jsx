@@ -1,40 +1,40 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { Title } from '../../components';
+import { selectHotels, selectHotelsError, selectHotelsLoading } from '../../selectors';
+import { fetchHotels } from '../../hooks';
 
 import styles from './HotelsPage.module.css';
 
 export const HotelsPage = () => {
-	const [hotels, setHotels] = useState([]);
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	console.log(hotels);
-	useEffect(() => {
-		const fetchRooms = async () => {
-			try {
-				const res = await fetch('http://localhost:3001/hotels');
-				const data = await res.json();
-				setHotels(data);
-			} catch (error) {
-				console.error('Ошибка при загрузке номеров: ', error);
-			}
-		};
 
-		fetchRooms();
-	}, []);
+	const hotels = useSelector(selectHotels) || [];
+	const loading = useSelector(selectHotelsLoading);
+	const error = useSelector(selectHotelsError);
+
+	useEffect(() => {
+		dispatch(fetchHotels());
+	}, [dispatch]);
 
 	const goToRoom = (id) => {
 		navigate(`/hotels/${id}`);
 	};
 
+	if (loading) return <p>Загрузка отелей...</p>;
+	if (error) return <p>Ошибка: {error}</p>;
+
 	return (
 		<div className={styles.container}>
-			<Title>Доступные номера</Title>
+			<Title>Доступные отели</Title>
 			<div className={styles.cards}>
 				{hotels.map((hotel) => (
 					<div
-						key={hotel.id}
+						key={hotel._id}
 						className={styles.card}
-						onClick={() => goToRoom(hotel.id)}
+						onClick={() => goToRoom(hotel._id)}
 					>
 						<img
 							src={hotel.image}

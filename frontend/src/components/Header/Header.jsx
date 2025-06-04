@@ -41,7 +41,9 @@ export const Header = () => {
 					</div>
 				) : (
 					<div className={styles.logout}>
-						<div className={styles.userName}>{user}</div>
+						<div className={styles.userName}>
+							{user?.login ? user.login : '...'}
+						</div>
 						<Link>
 							<Icon
 								id="fa-sign-out"

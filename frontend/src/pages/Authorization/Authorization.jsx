@@ -3,8 +3,9 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Title, Input } from '../../components';
-import { ACTION_TYPE } from '../../actions';
+import { ACTION_TYPE, login } from '../../actions';
 import { selectRole } from '../../selectors';
+import { apiRequest } from '../../utils';
 
 import styles from './Authorization.module.css';
 
@@ -17,7 +18,7 @@ export const Authorization = () => {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
+		formState: { errors, isValid },
 		setError,
 		clearErrors,
 	} = useForm();
@@ -30,33 +31,24 @@ export const Authorization = () => {
 
 	const onSubmit = async (data) => {
 		try {
-			const res = await fetch(
-				`http://localhost:3001/users?login=${data.login}&password=${data.password}`,
-			);
-			const users = await res.json();
+			const loginData = await apiRequest('/auth/login', 'POST', {
+				login: data.login,
+				password: data.password,
+			});
 
-			if (users.length > 0) {
-				const user = users[0];
-				dispatch({
-					type: ACTION_TYPE.LOGIN,
-					payload: {
-						user: user.login,
-						role: user.role,
-					},
-				});
+			const token = loginData.token;
 
-				localStorage.setItem(
-					'user',
-					JSON.stringify({ user: user.login, role: user.role }),
-				);
+			localStorage.setItem('token', token);
 
-				navigate('/');
-			} else {
-				setError('login', { message: 'Неверный логин или пароль' });
-				setError('password', { message: '' });
-			}
+			const userData = await apiRequest('/auth/me');
+
+			dispatch(login(userData, userData.role, token));
+
+			navigate('/');
 		} catch (error) {
 			console.error('Ошибка при авторизации: ', error);
+			setError('login', { message: 'Неверный логин или пароль' });
+			setError('password', { message: '' });
 		}
 	};
 
@@ -85,11 +77,7 @@ export const Authorization = () => {
 					<p className={styles.error}>{errors.password.message}</p>
 				)}
 
-				<Button
-					className={styles.button}
-					type="submit"
-					disabled={!!(errors.login || errors.password)}
-				>
+				<Button className={styles.button} type="submit" disabled={!isValid}>
 					Авторизоваться
 				</Button>
 				<div className={styles.buttonReg}>

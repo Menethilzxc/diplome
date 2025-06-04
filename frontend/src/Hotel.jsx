@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Header, Footer } from './components';
 import {
 	Authorization,
@@ -11,25 +11,33 @@ import {
 	HotelsPage,
 	HotelPage,
 } from './pages';
-import { ACTION_TYPE } from './actions';
+import { login } from './actions';
+import { apiRequest } from './utils';
 
 import styles from './Hotel.module.css';
 
 function Hotel() {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	useEffect(() => {
-		const storedUser = localStorage.getItem('user');
+		const checkAuth = async () => {
+			const token = localStorage.getItem('token');
 
-		if (storedUser) {
-			const { user, role } = JSON.parse(storedUser);
+			if (!token) return;
 
-			dispatch({
-				type: ACTION_TYPE.LOGIN,
-				payload: { user, role },
-			});
-		}
-	}, [dispatch]);
+			try {
+				const data = await apiRequest('/auth/me');
+				dispatch(login(data, data.role, token));
+			} catch (error) {
+				console.error('Ошибка при проверке авторизации: ', error.message);
+				localStorage.removeItem('token');
+				navigate('/authorization');
+			}
+		};
+
+		checkAuth();
+	}, [dispatch, navigate]);
 
 	return (
 		<div className={styles.container}>
