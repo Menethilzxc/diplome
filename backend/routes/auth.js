@@ -28,7 +28,7 @@ router.post("/register", async (req, res) => {
 
     const token = jwt.sign(
       { id: newUser._id, role: newUser.role },
-      "secret_key"
+      process.env.JWT_SECRET
     );
 
     res.status(201).json({ token });
@@ -51,7 +51,10 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Неверные данные" });
     }
 
-    const token = jwt.sign({ id: user._id, role: user.role }, "secret_key");
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET
+    );
 
     const { _id, login: userLogin, role: role } = user;
 

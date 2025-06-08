@@ -9,7 +9,7 @@ export const authenticateToken = (req, res, next) => {
     return res.status(401).json({ error: "Нет токена авторизации" });
   }
 
-  jwt.verify(token, "secret_key", (err, user) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
       return res.status(403).json({ error: "Неверный токен" });
     }
