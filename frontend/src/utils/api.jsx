@@ -16,7 +16,7 @@ export const apiRequest = async (url, method = 'GET', body = null) => {
 		options.body = JSON.stringify(body);
 	}
 
-	const fullUrl = `http://localhost:3001${url}`;
+	const fullUrl = `http://85.198.81.221:3008${url}`;
 
 	const response = await fetch(fullUrl, options);
 
